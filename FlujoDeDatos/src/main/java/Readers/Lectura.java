@@ -16,6 +16,7 @@ public class Lectura {
 		//System.err.println();
 		
 		
+		
 		System.out.write(  13  );  // 
 		System.out.write(  10  );  // enter 
 		System.out.write(  5 );
