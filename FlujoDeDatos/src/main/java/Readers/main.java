@@ -7,7 +7,7 @@ public class main {
 
 		Lectura leer = new Lectura();
 		
-		
+		leer.entradaDeDatos();
 		
 	}
 
