@@ -78,23 +78,20 @@ public class Lectura {
 	
 	public String entradaDeDatos() {
 		
+		String cadena = "";
 		try {
-			
-
 			int Byte = -1;
-			String cadena = "";
-			while(    (Byte = System.in.read())  != 13    ) 
+			while(    (Byte = System.in.read())  != '\n'    ) 
 			{
-				
+				if( Byte != 13 )
 					cadena += (char)Byte;
 			}
-			System.out.print( cadena );
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		return "";
+		return cadena;
 	}
 	
 }
