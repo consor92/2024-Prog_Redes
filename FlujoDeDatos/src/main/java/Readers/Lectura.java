@@ -73,6 +73,14 @@ public class Lectura {
 
 		
 		System.err.println("esto es un error critico");
+
+		String datoLeido = entradaDeDatos(); //  "556.7"
+
+		int numero = Integer.parseInt( datoLeido );  //  556
+		Double numeroConComa = Double.parseDouble( datoLeido );  // 556.7
+
+		
+		Double resultado = (Int)numeroConComa * numero;  //   (Int)numeroConComa  =>  556
 	}
 	
 	
