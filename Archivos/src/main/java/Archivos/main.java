@@ -10,11 +10,12 @@ public class main {
 		Ficheros archivo = new Ficheros("","Mario",".txt");
 		
 		//archivo.createFilePrintStream( archivo.getArchivo() );
-		archivo.createFilePrinter( archivo.getArchivo() );
+		//archivo.createFilePrinter( archivo.getArchivo() );
 		//archivo.datosArchivos();
 		//ps.println( archivo.leerCharChar(archivo.getArchivo()) );
-		ps.println(Utils.ANSI_RED + archivo.leerConReader(archivo.getArchivo()) + Utils.ANSI_RESET );
-		ps.println(Utils.ANSI_BOLD + Utils.ANSI_RED_BRIGHT + "\t\t\t khdsjkdhsjkdksdskjdjkd" + Utils.ANSI_RESET + Utils.ANSI_CLEAR_SCREEN);
+		//ps.println(Utils.ANSI_RED + archivo.leerConReader(archivo.getArchivo()) + Utils.ANSI_RESET );
+		//ps.println(Utils.ANSI_BOLD + Utils.ANSI_RED_BRIGHT + "\t\t\t khdsjkdhsjkdksdskjdjkd" + Utils.ANSI_RESET + Utils.ANSI_CLEAR_SCREEN);
+		archivo.eliminarArchivo( archivo.getArchivo() );
 	}
 
 }
