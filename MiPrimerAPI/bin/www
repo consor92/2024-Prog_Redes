@@ -1,0 +1,63 @@
+
+const app = require('../app')
+const debug = require('debug')('miprimerapi:server')
+const http = require('http')
+const figlet = require('figlet')
+const pkg = require('../package.json') 
+
+
+// Verificamos si existe un archivo de variables globales
+//si existe lo usamos (NODE_ENV) si no exite usamo el por
+//defecto (.env)
+
+
+// IF TERNARIO
+//  (condicion) ? (true) : (false)
+const env_path = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env' 
+require('dotenv').config( {path:env_path} )
+
+//configuramos un puerto de acceso a nuestra APP
+const port = process.env.PORT || 3000
+app.set( 'port' , port )
+
+const server = http.createServer( app )
+
+//hacemos que el servidor (nuestra aplicacion APP) escuche  por un PUERTO
+//en caso de que escuche una peticion ejecuta la funcion onListing()
+//en caso de que tenga un error ejecuta la funcion onError() 
+server.listen( port )
+server.on( 'error' ,  onError() )
+server.on( 'listening' , onListening() )
+
+function onError(error)
+{
+    // ===    !==   comparacion estricta (tipo y dato)
+    if( error.syscall !== 'listen')   
+        throw error
+
+    switch(error.code){
+        case 'EACCES':
+            //401
+            console.error( bind + ' requiere privilegios.')
+            process.exit(1)
+        break
+        case 'EADDRINUSE':
+            //
+            console.error( bind + ' recurso en uso.')
+            process.exit(1)
+        break
+    }
+}
+
+function onListening()
+{
+    const addr = server.address()
+    const bind = typeof addr == 'string' ? 'pipe ' + addr : 'port ' + addr.port
+    // 127.0.0.1:3000  <- (es un String)
+    // { addr: 127.0.0.1, port: 3000 }  <- (es un objeto)
+    //
+    //bind = pipe 127.0.0.1:3000
+    //bind = port 3000
+    debug( 'Escuchando por el puerto ' + bind ) 
+}
+
