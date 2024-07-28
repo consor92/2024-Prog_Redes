@@ -1,6 +1,4 @@
 const express = require('express')
-const { response } = require('../app')
-
 const router = express.Router()
 
 //httpRequest

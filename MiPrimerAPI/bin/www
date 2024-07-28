@@ -4,7 +4,8 @@ const debug = require('debug')('miprimerapi:server')
 const http = require('http')
 const figlet = require('figlet')
 const pkg = require('../package.json') 
-
+const chalk = require('chalk');
+const os = require('os');
 
 // Verificamos si existe un archivo de variables globales
 //si existe lo usamos (NODE_ENV) si no exite usamo el por
@@ -24,10 +25,11 @@ const server = http.createServer( app )
 
 //hacemos que el servidor (nuestra aplicacion APP) escuche  por un PUERTO
 //en caso de que escuche una peticion ejecuta la funcion onListing()
-//en caso de que tenga un error ejecuta la funcion onError() 
-server.listen( port )
-server.on( 'error' ,  onError() )
-server.on( 'listening' , onListening() )
+//en caso de que tenga un error ejecuta la funcion onError()
+// cuando prende el servicio nos da informacion del mismo con la funcion printTitle
+server.listen( port , printTitle )
+server.on( 'error' ,  onError )
+server.on( 'listening' , onListening )
 
 function onError(error)
 {
@@ -61,3 +63,50 @@ function onListening()
     debug( 'Escuchando por el puerto ' + bind ) 
 }
 
+// Prints the app title and more specifications
+function printTitle() {
+    process.stdout.write('\n');
+    process.stdout.write(chalk.blue(figlet.textSync('Base API', { font: 'Ogre' })) + '\n');
+    process.stdout.write('\n');
+    process.stdout.write(chalk.bold(`Name: `) + chalk.green(`${pkg.name}\n`));
+    process.stdout.write(chalk.bold(`Version: `) + chalk.green(`${pkg.version}\n`));
+    process.stdout.write(chalk.bold(`Description: `) + chalk.green(`${pkg.description}\n`));
+    process.stdout.write(chalk.bold(`Author: `) + chalk.green(`${pkg.author}\n`));
+    process.stdout.write(chalk.bold(`Environment: `) + chalk.green(`${process.env.NODE_ENV || 'default'}\n`));
+
+    // Mostrar la dirección IP local
+    const ip = getLocalIP();
+    process.stdout.write(chalk.bold(`Local IP: `) + chalk.green(`${ip}\t`));
+
+    if (process.env.NODE_ENV !== 'production') {
+        process.stdout.write(chalk.bold(`Listening on port: `) + chalk.green(`${process.env.PORT || 3000}\n`));
+    }
+
+    // Mostrar algunas variables del archivo .env
+    process.stdout.write(chalk.bold(`Tipe DB: `) + chalk.green(`${process.env.DATABASE_TYPE || 'Not set'}\n`));
+    process.stdout.write(chalk.bold(`User: `) + chalk.green(`${process.env.DATABASE_USER || 'Not set'}\n`));
+    process.stdout.write(chalk.bold(`Pass: `) + chalk.green(`${process.env.DATABASE_PASS || 'Not set'}\n`));
+    process.stdout.write(chalk.bold(`Database: `) + chalk.green(`${process.env.DATABASE_DB || 'Not set'}\n`));
+    process.stdout.write(chalk.bold(`Database URL: `) + chalk.green(`${process.env.DATABASE_URL || 'Not set'}\n`));
+
+    process.stdout.write(chalk.bold(`API Key (publ): `) + chalk.green(`${process.env.API_KEY_PUBLIC || 'Not set'}\n`));
+    process.stdout.write(chalk.bold(`API Key (priv): `) + chalk.green(`${process.env.API_KEY_PRIVATE || 'Not set'}\n`));
+
+    // Mostrar los scripts definidos en package.json
+    process.stdout.write(chalk.bold(`Scripts:\n`));
+    for (const script in pkg.scripts) {
+        process.stdout.write(chalk.green(`  ${script}: ${pkg.scripts[script]}\n`));
+    }
+}
+
+function getLocalIP() {
+    const interfaces = os.networkInterfaces();
+    for (let iface in interfaces) {
+        for (let alias of interfaces[iface]) {
+            if (alias.family === 'IPv4' && !alias.internal) {
+                return alias.address;
+            }
+        }
+    }
+    return 'IP no disponible';
+}

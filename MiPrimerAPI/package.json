@@ -2,6 +2,10 @@
   "name": "miprimerapi",
   "private": true,
   "version": "0.0.0",
+  "description": "Esta es mi primera API con Node.js y Express.",
+  "main": "app.js",
+  "author": "Gonzalo",
+  "license": "ISC",
   "scripts": {
     "dev": "nodemon ./bin/www",
     "start": "node ./bin/www",
@@ -16,7 +20,8 @@
     "express": "~4.16.1",
     "figlet": "^1.6.0",
     "jsonwebtoken": "^9.0.2",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "chalk": "^5.0.0"
   },
   "devDependencies": {
     "eslint": "^8.51.0",
