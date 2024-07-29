@@ -13,7 +13,7 @@ const os = require('os'); // Importa os para obtener información del sistema op
 const env_path = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
 
 // Carga las variables de entorno desde el archivo .env o NODE_ENV segun corresponda
-require('dotenv').config({ path: env_path }); 
+require('dotenv').config({ path: env_path });
 
 // Configuramos un puerto de acceso a nuestra APP
 const port = process.env.PORT || 3000;
@@ -21,7 +21,7 @@ app.set('port', port);
 
 
 // Crea el servidor HTTP usando la aplicación de Express
-const server = http.createServer(app); 
+const server = http.createServer(app);
 
 // Hacemos que el servidor (nuestra aplicación APP) escuche por un PUERTO
 // en caso de que escuche una petición ejecuta la función printTitle()
@@ -91,75 +91,75 @@ function onError(error) {
         default: // Error no manejado
             // Si el error no es uno de los casos manejados, lo lanzamos
             throw error;
+    }
 }
 
-
-// Función que se ejecuta cuando el servidor está escuchando
-function onListening() {
-    const addr = server.address(); // Obtiene la dirección del servidor
-    const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port; // Define el tipo de dirección
-    debug('Listening on ' + bind); // Imprime la dirección en la consola de depuración
-    // 127.0.0.1:3000  <- (es un String)
-    /* { 
-            address: 127.0.0.1,
-            port: 3000 
-        }  <- (es un objeto)
-    */
-}
-
-// Función que imprime el título de la aplicación y otras especificaciones
-// Este sector imprime en la consola/terminal del servidor
-function printTitle() {
-    process.stdout.write('\n');
-    // Genera y colorea el texto usando figlet y chalk
-    process.stdout.write(chalk.blue(figlet.textSync('Base  API - ET32', { font: 'Ogre' })) + '\n');
-    process.stdout.write('\n');
-    // Imprime detalles del package.json
-    process.stdout.write(chalk.bold(`Name: `) + chalk.green(`${pkg.name}\n`));
-    process.stdout.write(chalk.bold(`Version: `) + chalk.green(`${pkg.version}\n`));
-    process.stdout.write(chalk.bold(`Description: `) + chalk.green(`${pkg.description}\n`));
-    process.stdout.write(chalk.bold(`Author: `) + chalk.green(`${pkg.author}\n`));
-    process.stdout.write(chalk.bold(`Environment: `) + chalk.green(`${process.env.NODE_ENV || 'default'}\n`));
-
-    // Mostrar la dirección IP local
-    const ip = getLocalIP();
-    process.stdout.write(chalk.bold(`Local IP: `) + chalk.green(`${ip}\t`));
-
-    if (process.env.NODE_ENV !== 'production') {
-        process.stdout.write(chalk.bold(`Listening on port: `) + chalk.green(`${process.env.PORT || 3000}\n`));
+    // Función que se ejecuta cuando el servidor está escuchando
+    function onListening() {
+        const addr = server.address(); // Obtiene la dirección del servidor
+        const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port; // Define el tipo de dirección
+        debug('Listening on ' + bind); // Imprime la dirección en la consola de depuración
+        // 127.0.0.1:3000  <- (es un String)
+        /* { 
+                address: 127.0.0.1,
+                port: 3000 
+            }  <- (es un objeto)
+        */
     }
 
-    // Mostrar algunas variables del archivo .env
-    process.stdout.write(chalk.bold(`Tipe DB: `) + chalk.green(`${process.env.DATABASE_TYPE || 'Not set'}\n`));
-    process.stdout.write(chalk.bold(`User: `) + chalk.green(`${process.env.DATABASE_USER || 'Not set'}\n`));
-    process.stdout.write(chalk.bold(`Pass: `) + chalk.green(`${process.env.DATABASE_PASS || 'Not set'}\n`));
-    process.stdout.write(chalk.bold(`Database: `) + chalk.green(`${process.env.DATABASE_DB || 'Not set'}\n`));
-    process.stdout.write(chalk.bold(`Database URL: `) + chalk.green(`${process.env.DATABASE_URL || 'Not set'}\n`));
+    // Función que imprime el título de la aplicación y otras especificaciones
+    // Este sector imprime en la consola/terminal del servidor
+    function printTitle() {
+        process.stdout.write('\n');
+        // Genera y colorea el texto usando figlet y chalk
+        process.stdout.write(chalk.blue(figlet.textSync('Base  API - ET32', { font: 'Ogre' })) + '\n');
+        process.stdout.write('\n');
+        // Imprime detalles del package.json
+        process.stdout.write(chalk.bold(`Name: `) + chalk.green(`${pkg.name}\n`));
+        process.stdout.write(chalk.bold(`Version: `) + chalk.green(`${pkg.version}\n`));
+        process.stdout.write(chalk.bold(`Description: `) + chalk.green(`${pkg.description}\n`));
+        process.stdout.write(chalk.bold(`Author: `) + chalk.green(`${pkg.author}\n`));
+        process.stdout.write(chalk.bold(`Environment: `) + chalk.green(`${process.env.NODE_ENV || 'default'}\n`));
 
-    process.stdout.write(chalk.bold(`API Key (publ): `) + chalk.green(`${process.env.API_KEY_PUBLIC || 'Not set'}\n`));
-    process.stdout.write(chalk.bold(`API Key (priv): `) + chalk.green(`${process.env.API_KEY_PRIVATE || 'Not set'}\n`));
+        // Mostrar la dirección IP local
+        const ip = getLocalIP();
+        process.stdout.write(chalk.bold(`Local IP: `) + chalk.green(`${ip}\t`));
 
-    // Mostrar los scripts definidos en package.json
-    process.stdout.write(chalk.bold(`Scripts:\n`));
-    for (const script in pkg.scripts) {
-        process.stdout.write(chalk.green(`  ${script}: ${pkg.scripts[script]}\n`));
+        if (process.env.NODE_ENV !== 'production') {
+            process.stdout.write(chalk.bold(`Listening on port: `) + chalk.green(`${process.env.PORT || 3000}\n`));
+        }
+
+        // Mostrar algunas variables del archivo .env
+        process.stdout.write(chalk.bold(`Tipe DB: `) + chalk.green(`${process.env.DATABASE_TYPE || 'Not set'}\n`));
+        process.stdout.write(chalk.bold(`User: `) + chalk.green(`${process.env.DATABASE_USER || 'Not set'}\n`));
+        process.stdout.write(chalk.bold(`Pass: `) + chalk.green(`${process.env.DATABASE_PASS || 'Not set'}\n`));
+        process.stdout.write(chalk.bold(`Database: `) + chalk.green(`${process.env.DATABASE_DB || 'Not set'}\n`));
+        process.stdout.write(chalk.bold(`Database URL: `) + chalk.green(`${process.env.DATABASE_URL || 'Not set'}\n`));
+
+        process.stdout.write(chalk.bold(`API Key (publ): `) + chalk.green(`${process.env.API_KEY_PUBLIC || 'Not set'}\n`));
+        process.stdout.write(chalk.bold(`API Key (priv): `) + chalk.green(`${process.env.API_KEY_PRIVATE || 'Not set'}\n`));
+
+        // Mostrar los scripts definidos en package.json
+        process.stdout.write(chalk.bold(`Scripts:\n`));
+        for (const script in pkg.scripts) {
+            process.stdout.write(chalk.green(`  ${script}: ${pkg.scripts[script]}\n`));
+        }
+
+        // Imprime un mensaje indicando que el servicio está a la escucha
+        process.stdout.write(chalk.yellow(figlet.textSync('|   Servicio a la escucha  |', { font: 'Ogre' })) + '\n');
+        process.stdout.write('\n');
     }
-    
-    // Imprime un mensaje indicando que el servicio está a la escucha
-    process.stdout.write(chalk.yellow(figlet.textSync('|   Servicio a la escucha  |', { font: 'Ogre' })) + '\n');
-    process.stdout.write('\n');
-}
 
 
-// Función para obtener la IP local
-function getLocalIP() {
-    const interfaces = os.networkInterfaces();
-    for (let iface in interfaces) {
-        for (let alias of interfaces[iface]) {
-            if (alias.family === 'IPv4' && !alias.internal) {
-                return alias.address;
+    // Función para obtener la IP local
+    function getLocalIP() {
+        const interfaces = os.networkInterfaces();
+        for (let iface in interfaces) {
+            for (let alias of interfaces[iface]) {
+                if (alias.family === 'IPv4' && !alias.internal) {
+                    return alias.address;
+                }
             }
         }
+        return 'IP no disponible' // Retorna este mensaje si no se encuentra la IP
     }
-    return 'IP no disponible'; // Retorna este mensaje si no se encuentra la IP
-}
