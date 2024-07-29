@@ -4,7 +4,9 @@ const router = express.Router(); // Crea un nuevo enrutador de Express para mane
 // Define una ruta para las solicitudes HTTP GET a '/home'
 // Esta ruta es relativa a donde se monte este enrutador. Por ejemplo, si se monta en '/api',
 // esta ruta se corresponderá a '/api/home'.
-router.get('/home', metodosParaRes );
+router.get('/', metodosParaRes );
+router.get('/user/:id', findUserById );
+
 
 // Puedes definir más rutas HTTP como POST, PUT, DELETE, PATCH aquí.
 // Ejemplos:
@@ -17,16 +19,25 @@ router.get('/home', metodosParaRes );
 // (info que llega ,  info que sale)
 // (  request      ,    response   )
 
+function findUserById(req, res, next){
+    const id = req.params.id
+    const code = req.query.code
+    //const {nombre , apellido} = req.body
+    const json = req.body
+
+    res.status(200).json( json.dni )
+}
 
 function metodosParaRes(req, res) {
     // Envía una respuesta con estado 200 y un mensaje JSON
-    res.status(200).json("no me peguessss");
+    const json = {nombre:"pepe", apellido:"suares"}
+    res.status(200).json(  json   );
 
     // Opcional: Enviar una respuesta con estado 404 y mensaje 'Not Found'
     // res.status(404).send('Not Found');
 
     // Opcional: Enviar una respuesta con estado 404 sin cuerpo
-    // res.sendStatus(404);
+     //res.sendStatus(404);
 
     // Opcional: Enviar una respuesta con cuerpo como texto
     // res.send('Hello World');
@@ -39,7 +50,7 @@ function metodosParaRes(req, res) {
     // res.redirect(301, '/permanent-new-page'); // Redirección permanente con estado 301
 
     // Opcional: Envía un archivo como respuesta
-    // res.sendFile('/path/to/file');
+    // res.sendFile('home.js');
 
     // Opcional: Finaliza la respuesta
     // res.end(); // Finaliza la respuesta sin enviar datos
@@ -85,7 +96,6 @@ function metodosParaReq(req, res) {
     const hostname = req.hostname; 
 }
 
-
 function codeStatusHTTP() {
     // 1xx: Informativo - La solicitud fue recibida y el proceso continúa.
     res.status(100).json({ message: 'Continuar' }); // 100 Continue
@@ -115,7 +125,6 @@ function codeStatusHTTP() {
     res.status(504).json({ error: 'Tiempo de espera de la puerta de enlace agotado' }); // 504 Gateway Timeout
 
 }
-
 
 // Exporta el enrutador para que pueda ser utilizado en otras partes de la aplicación
 module.exports = router;

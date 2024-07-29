@@ -6,7 +6,6 @@
   "main": "app.js",
   "author": "Gonzalo",
   "license": "ISC",
-
   "scripts": {
     "dev": "nodemon ./bin/www",
     "start": "node ./bin/www",
@@ -14,18 +13,21 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
-
   "dependencies": {
+    "chalk": "^4.0.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "express": "~4.16.1",
+    "express": "^4.19.2",
     "figlet": "^1.6.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "~1.9.1",
-    "chalk": "^4.0.0"
+    "mongodb": "^6.1.0",
+    "mongoose": "^7.6.0",
+    "mongoose-validator": "^2.1.0",
+    "migrate-mongo": "^11.0.0",
+    "bcrypt": "^5.1.1"
   },
-
   "devDependencies": {
     "eslint": "^8.51.0",
     "nodemon": "^3.0.1",
