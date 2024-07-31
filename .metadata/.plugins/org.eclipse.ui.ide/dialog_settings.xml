@@ -45,4 +45,8 @@
 		<item key="DIALOG_X_ORIGIN" value="258"/>
 		<item key="DIALOG_Y_ORIGIN" value="207"/>
 	</section>
+	<section name="WORKBENCH_SETTINGS">
+		<list key="ENABLED_TRANSFERS">
+		</list>
+	</section>
 </section>
