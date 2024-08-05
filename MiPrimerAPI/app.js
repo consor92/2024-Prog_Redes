@@ -6,6 +6,8 @@ const cors = require('cors') // Middleware para habilitar CORS (Cross-Origin Res
 
 // Importa los routers y middlewares personalizados
 const homeRouter = require('./routes/home') // Router para manejar rutas relacionadas con el estado del servidor
+const loginRouter = require('./routes/login') // Router para manejar rutas relacionadas con el estado del servidor
+
 
 const errorHandler = require('./middlewares/errorHandler') // Middleware para manejar errores
 
@@ -41,11 +43,11 @@ app.get('/favicon.ico', (req, res) => res.status(204)) // Responde con un códig
 
 // Rutas principales de la aplicación
 app.use('/home', homeRouter) // Usa el router para rutas relacionadas con el estado del servidor
-
+app.use('/user',  loginRouter )
 
 // Middleware de manejo de errores
 // Este middleware captura errores que no han sido manejados en los middlewares o rutas anteriores
-app.use(errorHandler)
+//app.use(errorHandler)
 
 // Exporta la aplicación para su uso en otros módulos (por ejemplo, en el archivo de arranque)
 module.exports = app
