@@ -13,7 +13,15 @@ public class CajaHilo extends Thread {
 	private long tiempoInicial;
 	private ArrayList<Persona> filaClientes; // cola de gente a PAGAR
 	private boolean matar = false;
+	private Thread hiloJoin = null;
 
+	public CajaHilo(int nro, String nom, long ti, Thread join, ArrayList<Persona> listCli) {
+		this.numCaja = nro;
+		this.nombreCajero = nom;
+		this.tiempoInicial = ti;
+		this.filaClientes = listCli;
+		this.hiloJoin = join;
+	}
 
 	public CajaHilo(int nro, String nom, long ti, ArrayList<Persona> listCli) {
 		this.numCaja = nro;
@@ -26,14 +34,26 @@ public class CajaHilo extends Thread {
 	// esta es la TAREA A EJECUTAR POR EL HILO
 	@Override
 	public void run() {
-		while( !matar ) {
-			for( Persona p : filaClientes ) {
-				ps.printf("Cliente: %s (%d) \n", p.getNombre() , p.getDni());
-				procesarCompra( p.getChanguito() );	
+		if (hiloJoin != null) {
+			try {
+				//semaforos
+				hiloJoin.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		while (!matar) {
+			for (Persona p : filaClientes) {
+				ps.printf("Cliente: %s (%d) \n", p.getNombre(), p.getDni());
+				procesarCompra(p.getChanguito());
 			}
 			ps.printf("Caja No. %d --finaliza ventas-- \n", this.getNumCaja());
 			this.matarHilo();
 		}
+		long tiempoFinal = System.currentTimeMillis();
+
+		ps.printf("El HILO %s tardo: %f en completarse \n", this.currentThread().getName(),
+				(tiempoFinal - tiempoInicial) / 1000.0);
 	}
 	////////////////////////////////
 
@@ -41,7 +61,7 @@ public class CajaHilo extends Thread {
 
 	private void procesarCompra(Map<String, Integer> changuito) {
 		// recorremo un diccionario
-		//ps.println(this.getNombreCajero());
+		// ps.println(this.getNombreCajero());
 		ps.printf("Caja No. %d - (%s)\n", this.getNumCaja(), this.getNombreCajero());
 		for (Map.Entry<String, Integer> c : changuito.entrySet()) {
 			cobrarProducto(c.getValue());
@@ -58,11 +78,10 @@ public class CajaHilo extends Thread {
 		}
 	}
 
-	public void matarHilo()
-	{
+	public void matarHilo() {
 		this.matar = true;
 	}
-	
+
 	public int getNumCaja() {
 		return numCaja;
 	}

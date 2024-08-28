@@ -1,5 +1,6 @@
 package Cajero_Supermercado;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,9 +11,6 @@ public class Main {
 	public static void main(String[] args) {
 
 		// --------//
-		// Obtenemos la marca de tiempo nical del S.O para
-		// generar comparacione en las tareas.
-		long tiempoInicial = System.currentTimeMillis();
 
 		// --- Aca despues vamos a aplicar Patrones de Dise�o FACTORY ---
 		Persona cli1 = new Persona("Pepito", 45678952,
@@ -33,8 +31,8 @@ public class Main {
 				new HashMap<String, Integer>(Map.of("Tomates", 3, "Budin", 2, "Nesquik", 1, "Leche", 3)));
 		Persona cli9 = new Persona("Matias", 12458524,
 				new HashMap<String, Integer>(Map.of("Medialuna", 12, "Pepino", 3, "Bagio", 2)));
-		Persona cli10 = new Persona("Renzo", 25632568,
-				new HashMap<String, Integer>(Map.of("Test Embarazo", 1, "Lubricante", 3, "Hojas A4", 2, "Pa�ales", 3)));
+		Persona cli10 = new Persona("Renzo", 25632568, new HashMap<String, Integer>(
+				Map.of("Test Embarazo", 1, "Lubricante", 3, "Hojas A4", 2, "Pa�ales", 3)));
 
 		// Crear un Array con Datos iniciales
 		// Crear un Map con datos iniciales
@@ -45,6 +43,7 @@ public class Main {
 		colaCaja1.add(cli10);
 		colaCaja1.add(cli9);
 		colaCaja1.add(cli5);
+		colaCaja1.add(cli4);
 
 		ArrayList<Persona> colaCaja2 = new ArrayList<>();
 		colaCaja2.add(cli1);
@@ -52,25 +51,29 @@ public class Main {
 		colaCaja2.add(cli2);
 		colaCaja2.add(cli3);
 
+		// Obtenemos la marca de tiempo nical del S.O para
+		// generar comparacione en las tareas.
+		long tiempoInicial = System.currentTimeMillis();
+
 		// esta clase heredaba de Thread, asi que es
 		// un Hilo y tiene actividades para hacer.
 		CajaHilo Caja1 = new CajaHilo(7, "Raul", tiempoInicial, colaCaja1);
 		Caja1.setName("Caja_1");
 		Caja1.start();
-
 		
-		CajaHilo Caja2 = new CajaHilo(8, "Roberto", tiempoInicial, colaCaja2);
+		tiempoInicial = System.currentTimeMillis();
+		CajaHilo Caja2 = new CajaHilo(7, "Raul", tiempoInicial, Caja1 , colaCaja2);
 		Caja2.setName("Caja_2");
 		Caja2.start();
 		
-		/*
-		Thread Caja2 = new Thread(
-				new CajaHilo(8, "Roberto", tiempoInicial, colaCaja2), 
-				"Caja_2"  //nombre del HILO
-				);
-		Caja2.start();
-		 */
 		
+		PrintStream ps = new PrintStream(System.out);
+		ps.println("Seguimos con las tareas principales (HILOS EN PARALELOS)");
+		/*
+		 * Thread Caja2 = new Thread( new CajaHilo(8, "Roberto", tiempoInicial,
+		 * colaCaja2), "Caja_2" //nombre del HILO ); Caja2.start();
+		 */
+
 		// esta clase implementa Runnable asi que
 		// no es un Hilo es solamente una tarea a realizar.
 		Seguridad tareasDeSeguridad = new Seguridad();
@@ -90,6 +93,7 @@ public class Main {
 		empleado1.setPriority(Thread.MIN_PRIORITY);
 		empleado1.start();
 
+		//fin hilo principal MAIN
 	}
 
 	public void metodosHilo(long tiempoInicial) {
