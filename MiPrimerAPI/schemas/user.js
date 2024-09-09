@@ -20,14 +20,28 @@ function calcularEdad(fecha) {
 }
 
 //Validadores
-function telValidator(dato) {
-  return validate.isMobilePhone(dato, 'any', { strictMode: false });
-}
+const soloLetrasValidator = validate({
+  validator: 'isAlpha',
+  message: 'El campo debe contener solo letras.'
+});
 
-function soloLetrasValidator(dato) { /^[a-zA-Z]+$/.test(dato)}
-function soloLetrasConEspaciosValidator (dato){ /^[a-zA-Z\s]+$/.test(dato)}
-function usernameValidator  (dato) { /^[a-zA-Z0-9_]+$/.test(dato)}
-const emailValidator = validate({ validator: 'isEmail' });
+const soloLetrasConEspaciosValidator = validate({
+  validator: function (v) {
+    return /^[a-zA-Z\s]+$/.test(v);
+  },
+  message: 'El campo debe contener solo letras y espacios.'
+});
+
+const usernameValidator = validate({
+  validator: function (v) {
+    return /^[a-zA-Z0-9_]+$/.test(v);
+  },
+  message: 'El nombre de usuario debe contener solo letras, números y guiones bajos.'
+});
+const emailValidator = validate({
+  validator: 'isEmail',
+  message: 'El email proporcionado no es válido.'
+});
 
  
 const lowercaseValidator = validate({ 
@@ -51,6 +65,12 @@ const numerosValidator = validate({
 const longitudPasswordValidator = validate({
   validator: function (v) {return v.length >= 8 && v.length <= 16; },
   message: 'La contraseña debe tener entre 8 y 16 caracteres.'
+});
+
+const telValidator = validate({
+  // +54-2222-2222 
+  validator: function (v) {return /^(?:\+?\d{1,4}[ -]?)?\(?\d{1,5}\)?[ -]?\d{1,4}[ -]?\d{1,9}$/.test(v);},
+  message: 'El número de teléfono proporcionado no es válido.'
 });
 
 //Esytructura de la table en la DB
@@ -93,13 +113,13 @@ const userSchema = new Schema({
       uppercaseValidator ,
       numerosValidator ,
       specialCharValidator ,
-      //longitudPasswordValidator 
+      longitudPasswordValidator 
     ]
   },
   nacimiento: {
     type: Date,
     require: true,
-  },
+   },
   edad: {
     type: Number,
     default: function () {
@@ -114,10 +134,9 @@ const userSchema = new Schema({
   isActive: {
     type: Boolean,
     default: true,
-  },
-  //timestamps: true
-
-});//fin userSchema
+  } 
+},{timestamps: true}
+);//fin userSchema
 
 userSchema.pre('save', function (next) {
   if (this.isModified('nacimiento')) {
@@ -132,7 +151,11 @@ userSchema.methods.checkPassword = async function (pass)
     return Promise.reject( new Error('Password Requerido.') );
   }
   //HASH MD5 "miPasword123" =>  "d422s8e2v3d5d8"
-  const isMatch = bcrypt.compare(pass,this.password)
+  const isMatch = await bcrypt.compare(pass,this.password)
+
+  if (!isMatch) {
+    return Promise.reject( new Error('Contraseña incorrecta.'));
+  }
 
   return {isOk: isMatch , isLocked: !this.isActive};
 };

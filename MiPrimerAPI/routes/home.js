@@ -25,12 +25,20 @@ router.post('/usuarios' ,createUsuarios)
 
 async function createUsuarios(req , res,next)
 {
+    try {
     const body = req.body;
-
     // insertar en la DB
     const newUser = await User.create( body );
 
     res.status(201).json(newUser)
+    } catch (error) {
+        // Código de error para unicidad duplicada
+        if (error.code === 11000) { 
+            res.status(400).json({ message: 'Datos ya está en uso.' });
+        } else {
+            res.status(500).json({ message: 'Error al guardar el usuario.' });
+        }
+  }
 }
 
 async function getUsuarios(req,res,next)
