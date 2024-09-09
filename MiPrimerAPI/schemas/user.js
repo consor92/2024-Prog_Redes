@@ -1,18 +1,141 @@
-// Crea un índice único en los campos 'governmentId.type' y 'governmentId.number'
-userSchema.index({ 'governmentId.type': 1, 'governmentId.number': 1 }, { unique: true })
+const mongoose = require('mongoose');
+const validate = require('mongoose-validator');
+const bcrypt = require('bcrypt');
 
-// Define un método de instancia para verificar la contraseña del usuario
-userSchema.method('checkPassword', async function checkPassword(potentialPassword) {
-  if (!potentialPassword) {
-    return Promise.reject(new Error('Password is required'))
+const Schema = mongoose.Schema;
+const { ObjectId } = Schema.Types;
+
+
+function calcularEdad(fecha) {
+  const hoy = new Date();
+  const nacimiento = new Date(fecha);
+  const m = nacimiento.getMonth()-hoy.getMonth();
+  let edad =  hoy.getFullYear() - nacimiento.getFullYear();
+
+  if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+    edad--;
   }
 
-  // Compara la contraseña proporcionada con la contraseña almacenada (hashed)
-  const isMatch = await bcrypt.compare(potentialPassword, this.password)
+  return edad;
+}
 
-  // Devuelve un objeto indicando si la contraseña es correcta y si la cuenta está activa
-  return { isOk: isMatch, isLocked: !this.isActive }
-})
+//Validadores
+function telValidator(dato) {
+  return validate.isMobilePhone(dato, 'any', { strictMode: false });
+}
+
+function soloLetrasValidator(dato) { /^[a-zA-Z]+$/.test(dato)}
+function soloLetrasConEspaciosValidator (dato){ /^[a-zA-Z\s]+$/.test(dato)}
+function usernameValidator  (dato) { /^[a-zA-Z0-9_]+$/.test(dato)}
+const emailValidator = validate({ validator: 'isEmail' });
+
+ 
+const lowercaseValidator = validate({ 
+  validator: function (v) { return /[a-z]/.test(v); }, message: 'La contraseña debe contener al menos una letra minúscula.' });
+
+const uppercaseValidator = validate({
+  validator: function (v) { return /[A-Z]/.test(v); },
+  message: 'La contraseña debe contener al menos una letra mayúscula.'
+});
+
+const specialCharValidator = validate({
+  validator: function (v) { return /[_\-.\&$#]/.test(v); },
+  message: 'La contraseña debe contener al menos un carácter especial (_ - . & $ #).'
+});
+
+const numerosValidator = validate({
+  validator: function (v) {return /\d/.test(v);},
+  message: 'La contraseña debe contener al menos un número.'
+});
+
+const longitudPasswordValidator = validate({
+  validator: function (v) {return v.length >= 8 && v.length <= 16; },
+  message: 'La contraseña debe tener entre 8 y 16 caracteres.'
+});
+
+//Esytructura de la table en la DB
+const userSchema = new Schema({
+  nombre: {
+    type: String,
+    require: true,
+    trim: true,
+    lowercase: true,
+    validate: soloLetrasValidator
+  },
+  apellido: {
+    type: String,
+    require: true,
+    trim: true,
+    lowercase: true,
+    validate: soloLetrasConEspaciosValidator
+  },
+  email: {
+    type: String,
+    require: true,
+    trim: true,
+    lowercase: true,
+    unique: true,
+    validate: emailValidator
+  },
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    validate: usernameValidator,
+  },
+  password: {
+    type: String,
+    require: true,
+    select: false,
+    validate: [
+      lowercaseValidator ,
+      uppercaseValidator ,
+      numerosValidator ,
+      specialCharValidator ,
+      //longitudPasswordValidator 
+    ]
+  },
+  nacimiento: {
+    type: Date,
+    require: true,
+  },
+  edad: {
+    type: Number,
+    default: function () {
+      return calcularEdad(this.nacimiento)
+    }
+  },
+  tel: {
+    type: String,
+    trim: true,
+    validator: telValidator
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+  //timestamps: true
+
+});//fin userSchema
+
+userSchema.pre('save', function (next) {
+  if (this.isModified('nacimiento')) {
+    this.edad = calcularEdad(this.nacimiento);
+  }
+  next();
+});
+
+userSchema.methods.checkPassword = async function (pass)
+{
+  if(!pass){
+    return Promise.reject( new Error('Password Requerido.') );
+  }
+  //HASH MD5 "miPasword123" =>  "d422s8e2v3d5d8"
+  const isMatch = bcrypt.compare(pass,this.password)
+
+  return {isOk: isMatch , isLocked: !this.isActive};
+};
 
 // Crea un modelo llamado 'User' basado en el esquema userSchema
 // Un modelo es una clase con la que construimos documentos (instancias de datos) que se guardarán en la base de datos

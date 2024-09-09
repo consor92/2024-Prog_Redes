@@ -1,11 +1,15 @@
 const express = require('express'); // Importa el módulo Express para construir aplicaciones web
 const router = express.Router(); // Crea un nuevo enrutador de Express para manejar rutas
 
+const User = require('../schemas/user')
+
 // Define una ruta para las solicitudes HTTP GET a '/home'
 // Esta ruta es relativa a donde se monte este enrutador. Por ejemplo, si se monta en '/api',
 // esta ruta se corresponderá a '/api/home'.
 router.get('/', metodosParaRes );
 router.get('/user/:id', findUserById );
+router.get('/usuarios' ,getUsuarios)
+router.post('/usuarios' ,createUsuarios)
 
 
 // Puedes definir más rutas HTTP como POST, PUT, DELETE, PATCH aquí.
@@ -18,6 +22,30 @@ router.get('/user/:id', findUserById );
 // Función que maneja la solicitud GET a '/home'
 // (info que llega ,  info que sale)
 // (  request      ,    response   )
+
+async function createUsuarios(req , res,next)
+{
+    const body = req.body;
+
+    // insertar en la DB
+    const newUser = await User.create( body );
+
+    res.status(201).json(newUser)
+}
+
+async function getUsuarios(req,res,next)
+{
+    //muestra todos los datos find( {puede o notener condicion de busqueda} )
+    //const usuarios = await User.find()
+
+    //buscamos solo por un campo o varios campos pero son la 1° concidencia
+    const usuarios = await User.findOne( {edad:23}  )
+
+    //Busqueda por _Id
+    //const usuarios = await User.findById('66df141a6c922a1776afad75')
+
+    res.status(200).json( usuarios )
+}
 
 function findUserById(req, res, next){
     const id = req.params.id
