@@ -3,11 +3,17 @@ const express = require('express') // Framework para construir la aplicación we
 const cookieParser = require('cookie-parser') // Middleware para analizar cookies
 const logger = require('morgan') // Middleware para registrar solicitudes HTTP
 const cors = require('cors') // Middleware para habilitar CORS (Cross-Origin Resource Sharing)
+const sequelize = require('./models/SQL_config');
+
+require('./models/initModels'); // Inicializa modelos y relaciones
+
+
 
 // Importa los routers y middlewares personalizados
 const homeRouter = require('./routes/home') // Router para manejar rutas relacionadas con el estado del servidor
 const loginRouter = require('./routes/login') // Router para manejar rutas relacionadas con el estado del servidor
-
+const userRouter = require('./routes/user') 
+const roleRouter = require('./routes/roles') 
 
 const errorHandler = require('./middlewares/errorHandler') // Middleware para manejar errores
 
@@ -37,13 +43,16 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
 
+
 // Ruta para evitar el error de favicon no encontrado
 // Esto evita que el servidor responda con un error 404 cuando el navegador solicita un favicon
 app.get('/favicon.ico', (req, res) => res.status(204)) // Responde con un código de estado 204 (Sin contenido)
 
 // Rutas principales de la aplicación
 app.use('/home', homeRouter) // Usa el router para rutas relacionadas con el estado del servidor
-app.use('/user',  loginRouter )
+app.use('/login',  loginRouter )
+app.use('/users',  userRouter )
+app.use('/roles',  roleRouter )
 
 // Middleware de manejo de errores
 // Este middleware captura errores que no han sido manejados en los middlewares o rutas anteriores
