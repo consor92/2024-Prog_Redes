@@ -30,7 +30,7 @@ public class Cliente {
 
 		try {
 			IP = InetAddress.getByName("localhost");
-			sock = new Socket(IP, puerto);
+			sock = new Socket(IP, puerto); //se conectar
 
 			dis = new DataInputStream(sock.getInputStream());
 			dos = new DataOutputStream(sock.getOutputStream());
@@ -40,14 +40,13 @@ public class Cliente {
 
 			if (sock.isConnected() && nickEnviado) {
 				ps.println("Ingresa tu ID: ");
-				String nickname = buff.readLine();
-				dos.writeUTF(nickname);
+				String nick = buff.readLine();
+				dos.writeUTF(nick);
 				nickEnviado = false;
 
-				ps.println("Bienvenido " + nickname);
+				ps.println("Bienvenido " + nick);
 			}
 			ps.print("\t-> ");
-			dos.writeUTF(nick);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -76,6 +75,27 @@ public class Cliente {
 		enviarMensajes.start();
 
 		// Hilo que leer datos permanentemente y los envia por la red.
-
+		Thread recibirMensaje = new Thread(
+				new Runnable() {	
+					@Override
+					public void run() {
+						String msg = "";
+						while( true && !msg.equalsIgnoreCase("/salir") )	{
+							try {								
+								msg=dis.readUTF();
+								ps.println( msg );
+								
+								ps.println("\t->");
+							} catch (IOException e) {
+								Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, e);
+							}
+						}//while
+					}//run
+				}//runnable
+				);//thread
+		recibirMensaje.setName("recibir");
+		recibirMensaje.start();
+		
+			
 	}
 }
