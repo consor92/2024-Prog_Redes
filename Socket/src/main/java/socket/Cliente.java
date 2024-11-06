@@ -63,8 +63,9 @@ public class Cliente {
 						msg = buff.readLine();
 
 						dos.writeUTF(msg);
-						ps.print("\n->");
+						ps.print("\t->");
 					}
+					//sock.close();
 				} catch (IOException e) {
 					Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, e);
 				} // try
@@ -83,13 +84,14 @@ public class Cliente {
 						while( true && !msg.equalsIgnoreCase("/salir") )	{
 							try {								
 								msg=dis.readUTF();
-								ps.println( msg );
+								ps.println( "\t".concat(msg) );
 								
 								ps.println("\t->");
 							} catch (IOException e) {
 								Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, e);
 							}
 						}//while
+						
 					}//run
 				}//runnable
 				);//thread
