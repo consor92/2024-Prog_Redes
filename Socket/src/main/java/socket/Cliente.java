@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,6 +46,17 @@ public class Cliente {
 				nickEnviado = false;
 
 				ps.println("Bienvenido " + nick);
+				
+				
+				
+	            // Enviar el IV al servidor
+				byte[] iv = Cifrado.generarIV();
+				dos.writeInt(iv.length);  // Primero enviamos el tamaño del array
+				dos.write(iv);            // Luego enviamos los bytes del IV
+				System.out.println("IV enviado: " + Base64.getEncoder().encodeToString(iv));
+				
+				
+				
 			}
 			ps.print("\t-> ");
 		} catch (UnknownHostException e) {

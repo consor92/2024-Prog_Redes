@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -82,7 +83,18 @@ public class Servidor extends Thread {
 				ps.println(
 						Servidor.ANSI_CYAN + "Creando un cliente... esperado identificacion..." + Servidor.ANSI_RESET);
 				String nickName = dis.readUTF();
+				
+				
+				
+	            // Leer el tamaño del array de bytes (IV)
+	            int length = dis.readInt();
+	            // Leer los bytes del IV
+	            byte[] iv = new byte[length];
+	            dis.readFully(iv);
+	            System.out.println("IV recibido: " + Base64.getEncoder().encodeToString(iv));
 
+	            
+	            
 				ClienteCli cli = new ClienteCli(sockCli, nickName, dis, dos);
 				ClientesConectados.add(cli);
 

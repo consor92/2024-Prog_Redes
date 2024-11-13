@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.Base64;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,7 +79,6 @@ public class ClienteCli implements Runnable {
 				//  mensaje= /salir
 				
 				
-				
 				//enviar mensaje
 				for( ClienteCli cli : Servidor.ClientesConectados)
 				{
@@ -87,7 +87,7 @@ public class ClienteCli implements Runnable {
 						break;
 					
 					if(cli.getNickName().toLowerCase().equalsIgnoreCase(destino) && this.isConected )
-					{
+					{						
 						cli.dosCliente.writeUTF(Servidor.ANSI_YELLOW 
 								+this.nickName
 								+ ":"
